@@ -1,0 +1,223 @@
+<?php
+require_once 'config.php';
+
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
+}
+
+$totalItems = 0;
+$items = [];
+$total = 0;
+$hasStockError = false;
+
+if (!empty($_SESSION['cart'])) {
+    foreach ($_SESSION['cart'] as $itemId => $itemQty) {
+        $sql = "CALL GetItemById(?)";
+        $stmt = $connexion->prepare($sql);
+        $stmt->bind_param("i", $itemId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stmt->close();
+
+        if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $stockDisponible = $row['Quantite'];
+            $insufficient = ($itemQty > $stockDisponible);
+            if ($insufficient) $hasStockError = true;
+
+            $items[] = [
+                'id' => $row['IdItem'],
+                'name' => $row['Nom'],
+                'price' => $row['Prix'],
+                'qty' => $itemQty,
+                'stock' => $stockDisponible,
+                'insufficient' => $insufficient,
+                'image' => $row['image']
+            ];
+            $totalItems += $itemQty;
+            $total += ($row['Prix'] * $itemQty);
+        }
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>AVERSE - Panier</title>
+    <link rel="stylesheet" href="CSS/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/panier.css">
+</head>
+<body>
+
+<?php include_once 'template/header.php' ?>
+
+<main class="container">
+    <div class="cart-header">
+        <h1 class="cart-title">Votre Panier</h1>
+
+    </div>
+
+    <?php if (empty($items)): ?>
+        <div class="empty-cart" style="text-align:center; padding:80px 0;">
+            <i class="fa-solid fa-box-open" style="font-size: 5rem; color: #ddd; margin-bottom: 20px;"></i>
+            <h2 style="font-family: 'Cinzel', serif;">Votre panier est vide</h2>
+            <a href="index.php" class="btn-order" style="text-decoration:none; display:inline-block; width:auto; padding: 15px 40px;">Boutique</a>
+        </div>
+    <?php else: ?>
+
+        <?php if ($hasStockError): ?>
+            <div class="error-banner">
+                <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.5rem;"></i>
+                <div>
+                    <strong>Rupture de stock partielle !</strong> Certains items ne sont plus disponibles en quantité demandée.
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <div class="cart-layout" id="main-layout">
+            <div class="cart-items-list">
+                <?php foreach ($items as $item): ?>
+                <div class="cart-item <?= $item['insufficient'] ? 'item-error' : '' ?>">
+                    <a href="produit.php?id=<?= $item['id']?>" class="item-img-box">
+                        <img src="img/<?= htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['name']) ?>">
+                    </a>
+
+                    <div class="item-details">
+                        <h3 style="margin: 0 0 5px 0; font-size: 1.1rem;"><?= htmlspecialchars($item['name']) ?></h3>
+                        <span style="color: #888; font-size: 0.9rem;">Prix unitaire: <?= $item['price'] ?> 🟡</span>
+
+                        <?php if($item['insufficient']): ?>
+                            <div class="stock-warning">
+                                <i class="fa-solid fa-circle-exclamation"></i> Stock max : <?= $item['stock'] ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <div class="quantity-control">
+                            <button class="qty-btn" onclick="updateQty(<?= $item['id'] ?>, -1)">
+                                <?= ($item['qty'] > 1) ? '<i class="fa-solid fa-minus"></i>' : '<i class="fa-solid fa-trash-can" style="color:#e74c3c"></i>' ?>
+                            </button>
+
+                            <input type="number"
+                                class="qty-input"
+                                value="<?= $item['qty'] ?>"
+                                min="1"
+                                max="<?= $item['stock'] ?>"
+                                onchange="setManualQty(<?= $item['id'] ?>, this.value)">
+
+                            <button class="qty-btn" onclick="updateQty(<?= $item['id'] ?>, 1)">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #d4af37;"><?= $item['price'] * $item['qty'] ?> 🟡</div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+
+            <aside class="cart-summary">
+                <div class="summary-box">
+
+                    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.4rem; padding-top: 15px; margin-bottom: 25px;">
+                        <span>Total</span>
+                        <span style="color: #d4af37;"><?= $total ?> 🟡</span>
+                    </div>
+
+                    <?php if(!isset($_SESSION['user'])): ?>
+                        <a href="register.php" class="btn-order" style="text-decoration:none; display:block; text-align:center;">Se connecter</a>
+                    <?php else: ?>
+                        <button id="btn-valider-commande"
+                                onclick="validerCommande()"
+                                class="btn-order"
+                                <?= $hasStockError ? 'disabled' : '' ?>>
+                            <?= $hasStockError ? 'Ajuster les stocks' : 'Finaliser la transaction' ?>
+                        </button>
+                    <?php endif; ?>
+
+                    <div class="secure-badge">
+                        <strong>💳 Paiement sécurisé 🔒</strong><br>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    <?php endif; ?>
+</main>
+
+<div id="success-overlay" class="order-success-overlay">
+    <div class="success-card" id="success-card">
+        <div style="font-size: 60px; color: #2ecc71; margin-bottom: 20px;"><i class="fa-solid fa-circle-check"></i></div>
+        <h2 style="font-family: 'Cinzel', serif; color: #111;">Achat Réussi</h2>
+        <p>Vos nouveaux équipements vous attendent dans votre inventaire.</p>
+        <div style="margin-top: 25px; height: 6px; background: #eee; border-radius: 10px; overflow: hidden;">
+            <div style="width: 100%; height: 100%; background: #d4af37; animation: progress 2.5s linear;"></div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>   
+<script>
+const currentCart = {
+    <?php foreach($items as $item): ?>
+    "<?= $item['id'] ?>": <?= $item['qty'] ?>,
+    <?php endforeach; ?>
+};
+
+function updateQty(id, delta) {
+    let formData = new FormData();
+    formData.append('id', id);
+    formData.append('qty', delta);
+    fetch('add_to_cart.php', { method: 'POST', body: formData })
+    .then(() => location.reload());
+}
+
+function setManualQty(id, newVal) {
+    let val = parseInt(newVal);
+    let oldVal = currentCart[id];
+
+    if (isNaN(val) || val < 1) {
+        updateQty(id, (1 - oldVal));
+        return;
+    }
+
+    let delta = val - oldVal;
+
+    if (delta !== 0) {
+        updateQty(id, delta);
+    }
+}
+
+function validerCommande() {
+    const btn = document.getElementById('btn-valider-commande');
+    const overlay = document.getElementById('success-overlay');
+    const card = document.getElementById('success-card');
+    const layout = document.getElementById('main-layout');
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> TRANSFERT EN COURS...';
+
+    fetch('commander.php', { method: 'POST' })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            layout.style.filter = 'blur(8px)';
+            overlay.style.display = 'flex';
+            setTimeout(() => { card.classList.add('show'); }, 50);
+            setTimeout(() => { window.location.href = 'inventaire.php'; }, 2600);
+        } else {
+            alert("Erreur : " + data.message);
+            location.reload();
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        btn.disabled = false;
+        btn.innerText = "Réessayer";
+    });
+
+}
+</script>
+</body>
+</html>
