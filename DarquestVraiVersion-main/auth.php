@@ -5,6 +5,7 @@ require_once 'config.php';
 $alias = $_POST['alias'] ?? '';
 $password = $_POST['password'] ?? '';
 
+// jai corriger pour que auth marche
 $sql = "SELECT * FROM Joueurs WHERE Alias = ?";
 $stmt = $connexion->prepare($sql);
 $stmt->bind_param("s", $alias);
