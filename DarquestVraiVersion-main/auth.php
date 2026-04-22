@@ -13,6 +13,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc(); 
 
+// jai corriger pour que auth marche
 if ($user && password_verify($password, $user['MDP'])) {
     $_SESSION['user'] = $user;
     header('Location: index.php');
