@@ -81,17 +81,17 @@ $pvPercent = min(100, max(0, ($pv / 100) * 100));
 
         <div class="monnaie-grid">
             <div class="coin-box">
-                <img src="gold.png" alt="Or">
+                <img src="img/gold.png" alt="Or">
                 <h3><?= number_format($or) ?></h3>
                 <span>Pièces d'Or</span>
             </div>
             <div class="coin-box">
-                <img src="silver.png" alt="Argent">
+                <img src="img/silver.png" alt="Argent">
                 <h3><?= number_format($argent) ?></h3>
                 <span>Pièces d'Argent</span>
             </div>
             <div class="coin-box">
-                <img src="bronze.png" alt="Bronze">
+                <img src="img/bronze.png" alt="Bronze">
                 <h3><?= number_format($bronze) ?></h3>
                 <span>Pièces de Bronze</span>
             </div>
