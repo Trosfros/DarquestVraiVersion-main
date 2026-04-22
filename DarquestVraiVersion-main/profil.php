@@ -138,7 +138,7 @@ $pvPercent = min(100, max(0, ($pv / 100) * 100));
                 <i class="fas fa-scroll"></i> INVENTAIRE
             </a>
             <a href="logout.php" class="btn btn-logout">
-                <i class="fas fa-power-off"></i> QUITTER
+                <i class="fas fa-power-off"></i> DÉCONNEXION
             </a>
         </div>
 

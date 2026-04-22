@@ -6,20 +6,15 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
-$idJoueur = $_SESSION['user']['IdJoueur']; // known safe
-$result = $connexion->query(
-    "SELECT i.IdItem ,i.Quantite, it.Nom, it.image
-        FROM Inventaires i 
-        JOIN Items it ON i.IdItem = it.IdItem
-        WHERE i.IdJoueur = $idJoueur");
-$items_possedes = $result->fetch_all(MYSQLI_ASSOC);
+$idJoueur = $_SESSION['user']['IdJoueur'];
 
 $result = $connexion->query(
-    "SELECT i.IdItem ,i.Quantite, it.Nom, it.image
-        FROM Marche i 
-        JOIN Items it ON i.IdItem = it.IdItem
-        WHERE i.IdJoueur = $idJoueur");
-$items_vente = $result->fetch_all(MYSQLI_ASSOC);
+    "SELECT i.IdItem, i.Quantite, it.Nom, it.image, it.Prix, it.Rarete, it.Type
+     FROM Inventaires i 
+     JOIN Items it ON i.IdItem = it.IdItem
+     WHERE i.IdJoueur = $idJoueur"
+);
+$items_possedes = $result->fetch_all(MYSQLI_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -27,7 +22,6 @@ $items_vente = $result->fetch_all(MYSQLI_ASSOC);
     <meta charset="UTF-8">
     <title>AVERSE - Inventaire</title>
     <link rel="stylesheet" href="CSS/style.css">
-    
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/inventaire.css">
 </head>
@@ -39,37 +33,32 @@ $items_vente = $result->fetch_all(MYSQLI_ASSOC);
     <h1 class="inventory-title">Mon Inventaire</h1>
 
     <?php if (empty($items_possedes)): ?>
-        <?php else: ?>
+        <p style="text-align:center; color: #aaa;">Votre inventaire est vide.</p>
+    <?php else: ?>
         <div class="inventory-grid">
-            <?php foreach ($items_possedes as $item): ?>
+            <?php foreach ($items_possedes as $item): 
+                // Calcul dynamique du prix de vente pour l'affichage
+                $prixVente = 0;
+                if ($item['Type'] === 'S') {
+                    if ($item['Rarete'] == 1) $prixVente = $item['Prix'];
+                    elseif ($item['Rarete'] == 2) $prixVente = floor($item['Prix'] * 0.95);
+                    elseif ($item['Rarete'] == 3) $prixVente = floor($item['Prix'] * 0.90);
+                } else {
+                    $prixVente = floor($item['Prix'] * 0.60);
+                }
+            ?>
                 <div class="inventory-item">
                     <div class="item-img" style="height: 100px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
                         <img src="img/<?= htmlspecialchars($item['image'] ?: 'default.png') ?>" alt="" style="max-height: 100%;">
                     </div>
                     <h3 style="margin: 5px 0;"><?= htmlspecialchars($item['Nom']) ?></h3>
                     <p style="color: #d4af37; font-weight: bold;">Quantité : <?= $item['Quantite'] ?></p>
+                    <p style="font-size: 0.9em; color: #2ecc71;">Prix de vente : <?= $prixVente ?> <i class="fas fa-coins"></i></p>
                     
-                    <button class="btn btn-sell" onclick="openModal(this, '<?= $item['Nom'] ?>', <?= $item['IdItem']?>, 'vendre.php')">Vendre</button>
-                    <button class="btn btn-use" onclick="openModal(this, '<?= $item['Nom'] ?>', <?= $item['IdItem']?>, 'useItem.php')">Utiliser</button>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
-
-    <h1 class="inventory-title">Mes Items en vente</h1>
-
-    <?php if (empty($items_vente)): ?>
-        <?php else: ?>
-        <div class="inventory-grid">
-            <?php foreach ($items_vente as $item): ?>
-                <div class="inventory-item">
-                    <div class="item-img" style="height: 100px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
-                        <img src="img/<?= htmlspecialchars($item['image'] ?: 'default.png') ?>" alt="" style="max-height: 100%;">
+                    <div style="display: flex; gap: 5px; margin-top: 10px;">
+                        <button class="btn btn-sell" onclick="openModal(this, '<?= $item['Nom'] ?>', <?= $item['IdItem']?>, 'vendre.php')">Vendre</button>
+                        <button class="btn btn-use" onclick="openModal(this, '<?= $item['Nom'] ?>', <?= $item['IdItem']?>, 'useItem.php')">Utiliser</button>
                     </div>
-                    <h3 style="margin: 5px 0;"><?= htmlspecialchars($item['Nom']) ?></h3>
-                    <p style="color: #d4af37; font-weight: bold;">Quantité : <?= $item['Quantite'] ?></p>
-                    
-                    <button class="btn btn-sell" onclick="openModal(this, '<?= $item['Nom'] ?>', <?= $item['IdItem']?>, 'retirer_vente.php')">Retirer</button>
                 </div>
             <?php endforeach; ?>
         </div>
@@ -83,20 +72,21 @@ $items_vente = $result->fetch_all(MYSQLI_ASSOC);
             <strong id="itemNameModal">l'objet</strong> ?</p>
         <div class="modal-buttons">
             <button class="btn" style="background: #ccc;" onclick="closeModal()">Annuler</button>
-            <button id="btn-confirm"/>
+            <button id="btn-confirm" class="btn"></button>
         </div>
     </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>   
 <script>
     function openModal(btn, nom, id, fichier) {
         const confirmBtn = document.getElementById('btn-confirm');
         confirmBtn.textContent = btn.innerText;
-        confirmBtn.className = btn.className;
-        confirmBtn.onclick = () => onConfirm(id, fichier)
+        confirmBtn.className = btn.className; 
+        confirmBtn.onclick = () => onConfirm(id, fichier);
 
         document.getElementById('itemNameModal').innerText = nom;
-        document.getElementById('actionNameModal').innerText = btn.innerText;
+        document.getElementById('actionNameModal').innerText = btn.innerText.toLowerCase();
         document.getElementById('confirmModal').style.display = 'flex';
     }
 
@@ -104,16 +94,17 @@ $items_vente = $result->fetch_all(MYSQLI_ASSOC);
         document.getElementById('confirmModal').style.display = 'none';
     }
 
-    function onConfirm(id, fichier) {
-        $.post(fichier, {id:id})
-            .done(function(data) {
-                location.reload()
-            })
-            .fail(function() {
-                alert("Error occurred.");
-            });
-        closeModal();
-    }
+   function onConfirm(id, fichier) {
+    $.post(fichier, {id: id})
+        .done(function(data) {
+         
+            window.location.reload(true); 
+        })
+        .fail(function() {
+            alert("Une erreur est survenue lors de la vente.");
+        });
+    closeModal();
+}
 
     window.onclick = function(event) {
         let modal = document.getElementById('confirmModal');
