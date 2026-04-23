@@ -110,9 +110,9 @@ $classeIcon = $estMage ? 'fa-hat-wizard' : 'fa-hammer';
     </div>
 
     <div class="stat-item">
-        <i class="fas fa-wand-magic-sparkles"></i> 
-        <?= min($userStats['StreakMagie'], 5) ?>/5 magie
-    </div>
+    <i class="fas fa-wand-magic-sparkles"></i> 
+    <?= min($userStats['MagieReussies'], 5) ?>/5 magie
+</div>
 </div>
 
     <?php if (!$is_playing): ?>

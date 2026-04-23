@@ -4,8 +4,7 @@ require_once 'config.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['choix'], $_POST['id_enigme'])) {
     $user = @ $_SESSION['user'];
     $id_joueur = $user['IdJoueur'];
-    // using these in queries is safe because all variables are type checked by php (int)
-    $id_enigme = (int)$_POST['id_enigme']; // TODO: this allows users to get any enigma by id
+    $id_enigme = (int)$_POST['id_enigme']; 
     $choix_joueur = (int)$_POST['choix'];
 
     if (!$id_joueur) {
@@ -31,23 +30,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['choix'], $_POST['id_e
             $labelPiece = "pièces d'Or";
         }
 
-        $reussi = $choix_joueur == $enigme['BonneReponse'] ? 1 : 0; // int to be usable in insertion
-        $stmt = $connexion->query(
-            "INSERT INTO EssaieEnigmes(IdJoueur, IdEnigme, Reussi) VALUES ($id_joueur, $id_enigme, $reussi)");
+        $reussi = $choix_joueur == $enigme['BonneReponse'] ? 1 : 0; 
+        $connexion->query("INSERT INTO EssaieEnigmes(IdJoueur, IdEnigme, Reussi) VALUES ($id_joueur, $id_enigme, $reussi)");
+        
         if ($reussi) {
             $status = "success";
             $message = "Bravo ! Bonne réponse. Vous gagnez 10 $labelPiece.";
 
             $connexion->query("UPDATE Joueurs SET $colonnePiece = $colonnePiece + 10 WHERE IdJoueur = $id_joueur");
+            
             if ($estUneEnigmeMagique) {
+               
                 $connexion->query("UPDATE Joueurs SET StreakMagie = StreakMagie + 1 WHERE IdJoueur = $id_joueur");
-                $nbReussies = $connexion->query("SELECT StreakMagie FROM Joueurs WHERE IdJoueur = $id_joueur")->fetch_assoc()['StreakMagie'];
+                
+                $connexion->query("UPDATE Joueurs SET MagieReussies = MagieReussies + 1 WHERE IdJoueur = $id_joueur");
 
-                if ($nbReussies >= 5) {
+                $userData = $connexion->query("SELECT StreakMagie, MagieReussies FROM Joueurs WHERE IdJoueur = $id_joueur")->fetch_assoc();
+
+                
+                if ($userData['MagieReussies'] >= 5) {
                     $connexion->query("UPDATE Joueurs SET EstMage = 1 WHERE IdJoueur = $id_joueur");
                 }
 
-                if ($nbReussies > 0 && $nbReussies % 3 == 0) {
+              
+                if ($userData['StreakMagie'] > 0 && $userData['StreakMagie'] % 3 == 0) {
                     $connexion->query("UPDATE Joueurs SET PieceOr = PieceOr + 100 WHERE IdJoueur = $id_joueur");
                     $message .= "<br>💰 **SÉRIE DE 3 !** Vous recevez 100 pièces d'Or bonus !";
                 }
@@ -57,16 +63,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['choix'], $_POST['id_e
             $perte = ($enigme['Difficulte'] == 1) ? 3 : (($enigme['Difficulte'] == 2) ? 6 : 10);
             $message = "Dommage... Mauvaise réponse. Vous perdez $perte PV.";
 
-            $updEchec = $connexion->query("UPDATE Joueurs SET PV = PV - $perte WHERE IdJoueur = $id_joueur");
+            $connexion->query("UPDATE Joueurs SET PV = GREATEST(0, PV - $perte) WHERE IdJoueur = $id_joueur");
+            
             if ($estUneEnigmeMagique) {
                 $connexion->query("UPDATE Joueurs SET StreakMagie = 0 WHERE IdJoueur = $id_joueur");
-                $message .= "<br>❌ Série brisée ! Le compteur de magie retombe à zéro.";
+                $message .= "<br>❌ Série brisée ! Le bonus de série retombe à zéro, mais votre progression de Mage est conservée.";
             }
         }
 
         $_SESSION['feedback'] = ['message' => $message, 'status' => $status];
         UpdateUserSessionInfo();
-        header("Location: enigma.php");
+
+        $checkPV = $connexion->query("SELECT PV FROM Joueurs WHERE IdJoueur = $id_joueur")->fetch_assoc();
+        if ($checkPV['PV'] <= 0) {
+            header("Location: game_over.php");
+        } else {
+            header("Location: enigma.php");
+        }
         exit();
     }
 }

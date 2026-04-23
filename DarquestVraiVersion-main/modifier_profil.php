@@ -17,27 +17,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $newMdp = $_POST['new_mdp'] ?? '';
     $confirmMdp = $_POST['confirm_mdp'] ?? '';
 
-
-    $sql = "UPDATE Joueurs SET Alias = ?, Nom = ?, Prenom = ? WHERE IdJoueur = ?";
-    $stmt = $connexion->prepare($sql);
-    $stmt->bind_param("sssi", $alias, $nom, $prenom, $idJoueur);
-    
-    if ($stmt->execute()) {
-        $message = "Profil mis à jour !";
-    }
-
-    if (!empty($newMdp)) {
-        if ($newMdp === $confirmMdp) {
-            $hashedMdp = password_hash($newMdp, PASSWORD_BCRYPT);
-            $sqlMdp = "UPDATE Joueurs SET MDP = ? WHERE IdJoueur = ?";
-            $stmtMdp = $connexion->prepare($sqlMdp);
-            $stmtMdp->bind_param("si", $hashedMdp, $idJoueur);
-            $stmtMdp->execute();
-            $message .= " Et le mot de passe a été changé.";
-        } else {
-            $error = "Les mots de passe ne correspondent pas !";
-            $message = ""; 
+    try {
+        $sql = "UPDATE Joueurs SET Alias = ?, Nom = ?, Prenom = ? WHERE IdJoueur = ?";
+        $stmt = $connexion->prepare($sql);
+        $stmt->bind_param("sssi", $alias, $nom, $prenom, $idJoueur);
+        
+        if ($stmt->execute()) {
+            $message = "Profil mis à jour !";
+         
+            $_SESSION['user']['Alias'] = $alias;
         }
+
+        if (!empty($newMdp)) {
+            if ($newMdp === $confirmMdp) {
+                $hashedMdp = password_hash($newMdp, PASSWORD_BCRYPT);
+                $sqlMdp = "UPDATE Joueurs SET MDP = ? WHERE IdJoueur = ?";
+                $stmtMdp = $connexion->prepare($sqlMdp);
+                $stmtMdp->bind_param("si", $hashedMdp, $idJoueur);
+                $stmtMdp->execute();
+                $message .= " Et le mot de passe a été changé.";
+            } else {
+                $error = "Les mots de passe ne correspondent pas !";
+                $message = ""; 
+            }
+        }
+    } catch (mysqli_sql_exception $e) {
+        
+        if ($e->getCode() == 1062) {
+            $error = "L'alias '" . htmlspecialchars($alias) . "' est déjà utilisé par un autre aventurier.";
+        } else {
+            $error = "Une erreur imprévue est survenue lors de la mise à jour.";
+        }
+        $message = "";
     }
 }
 

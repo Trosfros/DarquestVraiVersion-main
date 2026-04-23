@@ -12,7 +12,7 @@ if (isset($_SESSION['cart'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AVERSÉ - Centre de Support des Héros</title>
+    <title>Averse - Centre de Support des Héros</title>
     <link rel="stylesheet" href="CSS/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -30,7 +30,7 @@ if (isset($_SESSION['cart'])) {
     </div>
 
     <div class="server-status">
-        <span class="dot"></span> Serveurs Aversé : Opérationnels
+        <span class="dot"></span> Serveurs Averse : Opérationnels
     </div>
 
     <div class="category-grid">
