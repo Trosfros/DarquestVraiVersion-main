@@ -53,7 +53,10 @@ $items = $result->fetch_all(MYSQLI_ASSOC);
                         </div>
 
                         <h3><?= htmlspecialchars($item['Nom']) ?></h3>
-                        <div class="price"><?= number_format($item['Prix'], 0, '.', ' ') ?> 🟡</div>
+<div class="price">
+    <?= number_format($item['Prix'], 0, '.', ' ') ?> 
+    <img src="img/gold.png" alt="Or" class="coin-icon-small">
+                                                         </div>
                     </a>
 
                     <?php if ($isOutOfStock): ?>

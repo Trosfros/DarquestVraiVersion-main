@@ -172,3 +172,19 @@
     color: #e74c3c;
     margin-bottom: 10px;
 }
+
+.coin-icon-small {
+    width: 18px; /* Taille adaptée à la grille */
+    height: 18px;
+    vertical-align: middle;
+    margin-left: 4px;
+    object-fit: contain;
+}
+
+/* Optionnel : un petit effet brillant au survol de la carte */
+.product-card:hover .coin-icon-small {
+    filter: brightness(1.2);
+    transform: rotate(15deg);
+    transition: transform 0.2s ease-in-out;
+}
+

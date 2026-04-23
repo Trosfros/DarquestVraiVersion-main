@@ -58,7 +58,11 @@ $stockMax = intval($produit['Quantite']);
         <p class="description"><?= nl2br(htmlspecialchars($produit['Description'])) ?></p>
         <p class="description">Vendeur: <?= htmlspecialchars($produit['Vendeur']) ?></p>
 
-        <div class="price-tag"><?= number_format($produit['Prix'], 0, '.', ' ') ?> 🟡 <span>OR</span></div>
+        <div class="price-tag">
+            <?= number_format($produit['Prix'], 0, '.', ' ') ?> 
+            <img src="img/gold.png" alt="Or" style="width: 20px; height: 20px; vertical-align: middle; margin-left: 3px;">
+            <span>OR</span>
+        </div>
 
         <div class="purchase-zone">
             <div class="qty-input <?= $isOutOfStock ? 'disabled' : '' ?>">
