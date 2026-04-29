@@ -147,34 +147,34 @@ $classeIcon = $estMage ? 'fa-hat-wizard' : 'fa-hammer';
             </a>
         </div>
 
-        <div class="mage-section">
-            <h2 class="section-title">
-                <i class="fas fa-sparkles" style="color: var(--purple);"></i> 
-                Sanctuaire des Arcanes
-            </h2>
+       <div class="mage-section">
+    <h2 class="section-title">
+        <i class="fas fa-sparkles" style="color: var(--purple);"></i> 
+        Sanctuaire des Arcanes
+    </h2>
 
-            <?php if ($estMage): ?>
-                <div class="quest-card unlocked-mage-zone">
-                    <div class="quest-icon" style="color: #dfa6ff;"><i class="fas fa-book-spells"></i></div>
-                    <h3 style="color: white;">Grimoire Interdit</h3>
-                    <p style="color: #bbb;">Accédez aux secrets les plus profonds d'Averse.</p>
-                    <a href="mage_special.php" class="choice-btn" style="display:inline-block; text-decoration:none; margin-top:15px; border-color: var(--purple);">
-                        Entrer dans le Sanctuaire
-                    </a>
-                </div>
-            <?php else: ?>
-    <div class="locked-container">
-        <div class="locked-overlay">
-            <i class="fas fa-lock"></i>
-            <p>Devenez Mage pour débloquer (<?= $userStats['StreakMagie']?>/5)</p>
+    <?php if ($estMage): ?>
+        <div class="quest-card unlocked-mage-zone">
+            <div class="quest-icon" style="color: #dfa6ff;"><i class="fas fa-book-spells"></i></div>
+            <h3 style="color: white;">Grimoire Interdit</h3>
+            <p style="color: #bbb;">Accédez aux secrets les plus profonds d'Averse.</p>
+            <a href="mage_special.php" class="choice-btn" style="display:inline-block; text-decoration:none; margin-top:15px; border-color: var(--purple);">
+                Entrer dans le Sanctuaire
+            </a>
         </div>
-        <div style="filter: blur(8px); opacity: 0.3;">
-            <i class="fas fa-dragon" style="font-size: 3rem;"></i>
-            <h3>Quête Légendaire</h3>
+    <?php else: ?>
+        <div class="locked-container">
+            <div class="locked-overlay">
+                <i class="fas fa-lock"></i>
+                <p>Devenez Mage pour débloquer (<?= min($userStats['MagieReussies'] ?? 0, 5) ?>/5)</p>
+            </div>
+            <div style="filter: blur(8px); opacity: 0.3;">
+                <i class="fas fa-dragon" style="font-size: 3rem;"></i>
+                <h3>Quête Légendaire</h3>
+            </div>
         </div>
-    </div>
-<?php endif; ?>
-        </div>
+    <?php endif; ?>
+</div>
 
     <?php else: ?>
         <div class="enigma-card">

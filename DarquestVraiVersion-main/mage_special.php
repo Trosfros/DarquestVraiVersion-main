@@ -1,7 +1,6 @@
 <?php
 require_once 'config.php';
 
-// On récupère les infos de l'utilisateur en session
 $user = $_SESSION['user'] ?? null;
 
 if (!$user) {
@@ -9,12 +8,12 @@ if (!$user) {
     exit();
 }
 
-// Vérification : Autoriser si Mage OU Admin
+// On définit les deux rôles séparément
 $estMage = (isset($user['EstMage']) && $user['EstMage'] == 1);
 $estAdmin = (isset($user['EstAdmin']) && $user['EstAdmin'] == 1);
 
+// Si le joueur n'est PAS mage ET n'est PAS admin, on bloque l'accès
 if (!$estMage && !$estAdmin) {
-    // Redirection si l'utilisateur n'a aucun des deux rôles
     header('Location: enigma.php?error=access_denied');
     exit();
 }
