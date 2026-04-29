@@ -9,9 +9,11 @@ if (!isset($_SESSION['user'])) {
 $idJoueur = $_SESSION['user']['IdJoueur'];
 
 $result = $connexion->query(
-    "SELECT i.IdItem, i.Quantite, it.Nom, it.image, it.Prix, it.Rarete, it.Type
+    "SELECT i.IdItem, i.Quantite, it.Nom, it.image, it.Prix, it.Rarete, it.Type, COALESCE(p.Soins, s.Soins, 0) AS soins
      FROM Inventaires i 
      JOIN Items it ON i.IdItem = it.IdItem
+     left JOIN Potions p ON p.IdItem = i.IdItem
+     left JOIN Sorts s ON s.IdItem = i.IdItem
      WHERE i.IdJoueur = $idJoueur"
 );
 $items_possedes = $result->fetch_all(MYSQLI_ASSOC);
@@ -55,9 +57,12 @@ $items_possedes = $result->fetch_all(MYSQLI_ASSOC);
                     <p style="color: #d4af37; font-weight: bold;">Quantité : <?= $item['Quantite'] ?></p>
                     <p style="font-size: 0.9em; color: #2ecc71;">Prix de vente : <?= $prixVente ?> <i class="fas fa-coins"></i></p>
                     
-                    <div style="display: flex; gap: 5px; margin-top: 10px;">
+                    <div style="display: flex; gap: 5px; margin-top: 10px; alighn-items: center; justify-content: center;">
                         <button class="btn btn-sell" onclick="openModal(this, '<?= $item['Nom'] ?>', <?= $item['IdItem']?>, 'vendre.php')">Vendre</button>
-                        <button class="btn btn-use" onclick="openModal(this, '<?= $item['Nom'] ?>', <?= $item['IdItem']?>, 'useItem.php')">Utiliser</button>
+                        <?php if ($item['soins'] > 0): ?>
+                            <button class="btn btn-use" onclick="openModal(this, '<?= $item['Nom'] ?>', <?= $item['IdItem']?>, 'useItem.php')" <?= ($_SESSION['user']['PV'] == 100) ? 'disabled style="background: #626262;" title="Vous avez déjà tous vos points de vies."' : '' ?> >Utiliser</button>
+                        <?php endif; ?>
+                         
                     </div>
                 </div>
             <?php endforeach; ?>
