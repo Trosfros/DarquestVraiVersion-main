@@ -23,6 +23,7 @@
             <input type="text" name="prenom" placeholder="Prénom" required>
             <input type="text" name="nom" placeholder="Nom" required>
             <input type="text" name="alias" placeholder="Alias (Pseudo)" required>
+            <input type="text" name="mail" placeholder="Mail" required>
             <input type="password" name="mdp" placeholder="Mot de passe" required>
             <button type="submit" class="btn-reg">Rejoindre AVERSE</button>
         </form>

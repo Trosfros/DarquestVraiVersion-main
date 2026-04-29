@@ -7,12 +7,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $prenom = $_POST['prenom'];
     $nom = $_POST['nom'];
     $alias = $_POST['alias'];
+    $mail = $_POST['mail'];
     $mdp_hashe = password_hash($_POST['mdp'], PASSWORD_BCRYPT);
 
     try {
-        $sql = "INSERT INTO Joueurs (Alias, Nom, Prenom, MDP) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO Joueurs (Alias, Nom, Prenom, MDP, Mail) VALUES (?, ?, ?, ?, ?)";
         $stmt = $connexion->prepare($sql);
-        $stmt->bind_param("ssss", $alias, $nom, $prenom, $mdp_hashe);
+        $stmt->bind_param("sssss", $alias, $nom, $prenom, $mdp_hashe, $mail);
+        require 'mail_confirmation.php'; // $body
+
+        mail($mail, 'Activation du Compte Darquest', $body, ['From' => 'pit96e@gmail.com']);
 
         if ($stmt->execute()) {
             LogUser($alias);
