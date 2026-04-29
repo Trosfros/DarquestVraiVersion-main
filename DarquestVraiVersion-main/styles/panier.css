@@ -62,8 +62,9 @@
     font-weight: 600;
     font-family: 'Poppins', sans-serif;
     font-size: 1rem;
-    color: #333;
+
     outline: none;
+    
 }
 
 /* Cache les flèches par défaut du navigateur */
