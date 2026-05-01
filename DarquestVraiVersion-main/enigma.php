@@ -48,6 +48,7 @@ $classeIcon = $estMage ? 'fa-hat-wizard' : 'fa-hammer';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Averse - Salle des Quêtes</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="styles/engima.css">
 </head>
@@ -148,10 +149,13 @@ $classeIcon = $estMage ? 'fa-hat-wizard' : 'fa-hammer';
         </div>
 
        <div class="mage-section">
+         <!---  
+         se
     <h2 class="section-title">
         <i class="fas fa-sparkles" style="color: var(--purple);"></i> 
         Sanctuaire des Arcanes
     </h2>
+
 
     <?php if ($estMage): ?>
         <div class="quest-card unlocked-mage-zone">
@@ -173,6 +177,7 @@ $classeIcon = $estMage ? 'fa-hat-wizard' : 'fa-hammer';
                 <h3>Quête Légendaire</h3>
             </div>
         </div>
+        --->
     <?php endif; ?>
 </div>
 
