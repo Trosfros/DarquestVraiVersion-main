@@ -1,6 +1,7 @@
 <?php
 require_once 'config.php';
 
+//noice
 $user = $_SESSION['user'] ?? null;
 
 if (!$user) {
