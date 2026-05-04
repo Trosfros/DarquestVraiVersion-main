@@ -4,6 +4,9 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$domain = $scheme . '://' . $_SERVER['HTTP_HOST'];
+
 $serveur = "localhost";
 $utilisateur = "root";
 $motdepasse = "";

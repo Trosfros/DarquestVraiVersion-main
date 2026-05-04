@@ -1,5 +1,6 @@
 <?php
 require_once 'config.php';
+require_once 'Email.php';
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
@@ -9,18 +10,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $alias = $_POST['alias'];
     $mail = $_POST['mail'];
     $mdp_hashe = password_hash($_POST['mdp'], PASSWORD_BCRYPT);
+    $guid = bin2hex(openssl_random_pseudo_bytes(16));
 
     try {
-        $sql = "INSERT INTO Joueurs (Alias, Nom, Prenom, MDP, Mail) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO Joueurs (Alias, Nom, Prenom, MDP, Mail, Guid) VALUES (?, ?, ?, ?, ?, '$guid')";
         $stmt = $connexion->prepare($sql);
         $stmt->bind_param("sssss", $alias, $nom, $prenom, $mdp_hashe, $mail);
+
         require 'mail_confirmation.php'; // $body
 
-        mail($mail, 'Activation du Compte Darquest', $body, ['From' => 'pit96e@gmail.com']);
+        Email::readConfig('gmail.ini');
+        Email::send($mail, 'Activation du Compte Darquest', $body);
 
         if ($stmt->execute()) {
-            LogUser($alias);
-            header("Location: index.php");
+            header("Location: login.php");
             exit();
         }
     } catch (mysqli_sql_exception $e) {

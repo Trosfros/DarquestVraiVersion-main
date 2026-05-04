@@ -12,10 +12,10 @@
 
     <p></p>
     <?php if (isset($_GET['message']) && $_GET['message'] === 'restricted'): ?>
-    <div style="color: #e74c3c; background: rgba(231, 76, 60, 0.1); border: 1px solid #e74c3c; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold;">
-        <i class="fas fa-exclamation-circle"></i> 
-        Vous devez être connecté pour accéder aux quêtes.
-    </div>
+        <div style="color: #e74c3c; background: rgba(231, 76, 60, 0.1); border: 1px solid #e74c3c; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold;">
+            <i class="fas fa-exclamation-circle"></i> 
+            Vous devez être connecté pour accéder aux quêtes.
+        </div>
 <?php endif; ?>
     <div class="login-box">
         <h2 style="font-family: 'Cinzel', serif; color: #d4af37;">Accès au Royaume</h2>
