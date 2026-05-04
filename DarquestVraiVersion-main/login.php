@@ -5,6 +5,7 @@
     <title>AVERSE - Connexion</title>
     <link rel="stylesheet" href="CSS/style.css"> 
     <link rel="stylesheet" href="styles/login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <body>
     
     <?php include_once 'template/header.php' ?>

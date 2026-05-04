@@ -1,10 +1,11 @@
 <?php
 require_once 'config.php';
 
-$joueur = $_SESSION['user']['IdJoueur']; // known safe
+$joueur = $_SESSION['user']['IdJoueur'];  
+
 $stmt = $connexion->prepare("
     SELECT COALESCE(p.Soins, s.Soins, 0) AS Soins
-    FROM Inventaires i                              -- ensures item is owned
+    FROM Inventaires i                              
     LEFT JOIN Potions p ON p.IdItem = i.IdItem
     LEFT JOIN Sorts s ON s.IdItem = i.IdItem
     WHERE i.IdItem = ? AND i.IdJoueur = $joueur

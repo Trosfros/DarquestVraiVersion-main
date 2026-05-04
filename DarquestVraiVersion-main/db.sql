@@ -465,7 +465,32 @@ INSERT INTO CategorieEnigme (Categorie, EstMagie) VALUES
 INSERT INTO Enigme (IdCategorie, Difficulte, Question, Reponse1, Reponse2, Reponse3, Reponse4, BonneReponse) VALUES
   (1, 1, 'Quelle est la capitale de la France ?', 'Lyon', 'Paris', 'Marseille', 'Bordeaux', 2),
   (1, 2, 'Moyen', 'Lyon', 'Paris', 'Marseille', 'Bordeaux', 2),
-  (2, 3, 'Enigme magie', '1', '2', '3', '4', 2);
+  (2, 3, 'Enigme magie', '1', '2', '3', '4', 2),
+  (2,3,'Quel est la masse du soleil','1.9885 × 10³⁰ kilograms', '10cm','100kg', '1000kg', 1), 
+  (2,3,'Quel est le sort de base du mage','Boule de feu','Boule de glace','Boule de foudre','Boule de terre', 1),
+  (1,1,'Quelle est la couleur du ciel par temps clair ?','Bleu','Vert','Rouge','Jaune',1),
+  (1,1,'Combien y a-t-il de jours dans une semaine ?','5','6','7','8',3),
+  (1,1,'Quel animal miaule ?','Chien','Chat','Oiseau','Poisson',2),
+(1,1,'Quelle est la première lettre de l’alphabet ?','A','B','C','D',1),
+(1,1,'Quel fruit est jaune ?','Pomme','Banane','Fraise','Raisin',2),
+
+(1,2,'Quel est le plus grand océan du monde ?','Atlantique','Indien','Arctique','Pacifique',4),
+(1,2,'Combien font 5 x 6 ?','11','30','25','35',2),
+(1,2,'Quel gaz respirons-nous principalement ?','Oxygène','Hydrogène','Azote','CO2',3),
+(1,2,'Quel est le continent de l’Égypte ?','Asie','Europe','Afrique','Amérique',3),
+(1,2,'Quel instrument a des touches noires et blanches ?','Guitare','Piano','Violon','Flûte',2),
+
+(2,1,'Je suis rond et je donne de la lumière la nuit, qui suis-je ?','Le soleil','La lune','Une étoile','Une lampe',2),
+(2,1,'Plus je sèche, plus je suis mouillé. Qui suis-je ?','Éponge','Serviette','Nuage','Pluie',2),
+(2,1,'Je tombe sans me faire mal, qui suis-je ?','Pluie','Feuille','Neige','Vent',3),
+(2,1,'Je peux être cassé sans être touché. Qui suis-je ?','Secret','Verre','Bois','Pierre',1),
+(2,1,'Je monte mais ne descends jamais. Qui suis-je ?','Âge','Escalier','Ballon','Température',1),
+
+(2,2,'Je parle sans bouche et j’entends sans oreilles. Qui suis-je ?','Téléphone','Écho','Radio','Vent',2),
+(2,2,'Plus j’ai de gardiens, moins je suis en sécurité. Qui suis-je ?','Secret','Trésor','Maison','Ville',1),
+(2,2,'Je suis toujours devant toi mais tu ne peux pas me voir. Qui suis-je ?','Futur','Air','Ombre','Mur',1),
+(2,2,'Je peux remplir une pièce sans prendre de place. Qui suis-je ?','Air','Lumière','Son','Odeur',2),
+(2,2,'Qu’est-ce qui a des clés mais n’ouvre pas de portes ?','Clavier','Carte','Serrure','Coffre',1);
 
 CALL CreateArme('Épée Magique', 300, 'Une épee magique', 'epee.png', 1, 'Deux mains');
 CALL CreateArmure('Armure En Fer', 150, 'Une grosse armure capable de vous protéger contre les attaques!', 'amure1.png', 'Grande', 'Fer');

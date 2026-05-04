@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>AVERSE - Inscription</title>
     <link rel="stylesheet" href="CSS/style.css">
-    
+        <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/register.css">
 </head>
 <body>

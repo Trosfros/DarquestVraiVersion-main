@@ -93,9 +93,9 @@ if (!empty($_SESSION['cart'])) {
         }
 
         .qty-input {
-            background: #111 !important;
+            background: #f0f0f0 !important;
             color: #d4af37 !important;
-            border: 1px solid #444 !important;
+            border:none !important;
             font-weight: bold;
             width: 45px !important;
             text-align: center;

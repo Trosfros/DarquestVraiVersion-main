@@ -43,7 +43,7 @@
 
 
         .quest-card { background: white; border-radius: 15px; padding: 30px; text-align: center; text-decoration: none; color: inherit; transition: 0.3s; border: 1px solid #eee; border-bottom: 5px solid #ccc; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .quest-card:hover { transform: translateY(-10px); background: #fffdf5; }
+        .quest-card:hover { transform: translateY(-10px);  }
         .quest-card.bronze { border-bottom-color: #cd7f32; }
         .quest-card.silver { border-bottom-color: #c0c0c0; }
         .quest-card.gold { border-bottom-color: var(--gold); }
@@ -58,7 +58,6 @@
         .locked-overlay i { font-size: 2.5rem; color: #888; margin-bottom: 10px; }
         .locked-overlay p { font-weight: bold; color: #666; text-transform: uppercase; font-size: 0.8rem; }
         .unlocked-mage-zone { background: linear-gradient(145deg, #1a1a1a, #2c003e); border: 2px solid var(--purple); box-shadow: 0 0 30px rgba(155, 89, 182, 0.4); animation: aura-glow 3s infinite alternate; }
-        
         @keyframes aura-glow { from { box-shadow: 0 0 15px rgba(155, 89, 182, 0.2); } to { box-shadow: 0 0 35px rgba(155, 89, 182, 0.6); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
