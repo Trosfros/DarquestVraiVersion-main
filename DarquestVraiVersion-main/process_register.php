@@ -17,17 +17,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $connexion->prepare($sql);
         $stmt->bind_param("sssss", $alias, $nom, $prenom, $mdp_hashe, $mail);
 
-        require 'mail_confirmation.php'; // $body
-
-        Email::readConfig('gmail.ini');
-        Email::send($mail, 'Activation du Compte Darquest', $body);
-
         if ($stmt->execute()) {
+            require 'mail_confirmation.php'; // $body
+
+            Email::readConfig('gmail.ini');
+            Email::send($mail, 'Activation du Compte Darquest', $body);
             header("Location: login.php");
             exit();
         }
     } catch (mysqli_sql_exception $e) {
-        
+
         if ($e->getCode() === 1062) {
             header("Location: register.php?error=alias_taken");
             exit();
