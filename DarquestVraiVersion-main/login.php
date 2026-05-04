@@ -26,6 +26,10 @@
             <button type="submit" class="btn-login">Se connecter</button>
         </form>
         <?php if(isset($_GET['error'])) echo "<p style='color:red;'>Identifiants invalides</p>"; ?>
+
+        <a href="send_reset_password.php" class="reset-password">
+            Réinitialiser le mot de passe
+        </a>
     </div>
     <?php include_once 'template/footer.php' ?>
 </body>
